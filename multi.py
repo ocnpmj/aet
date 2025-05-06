@@ -47,19 +47,19 @@ def load_data(start_data, end_data):
     return data_account
 
 
-def web_driver():
-    driver = webdriver.Chrome()
-    return driver
+
 
 
 def run_bot(data_account, recover=1):
     kw = data_account[0]
+     driver = webdriver.Chrome()
+       
 
-    driver = web_driver()
+  
     driver.maximize_window()
 
     try:
-
+        
         
            
         username =  kw.replace(" ", "-")
