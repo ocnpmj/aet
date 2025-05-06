@@ -3,12 +3,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from supabase import create_client, Client
 from threading import Thread, Event
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 import csv
 import string
 import random
 import sys
-import os
+
 
 from concurrent.futures import (
     ProcessPoolExecutor,
@@ -47,14 +48,7 @@ def load_data(start_data, end_data):
 
 
 def web_driver():
-    options = webdriver.ChromeOptions()
-    options.add_argument("--verbose")
-    # options.add_argument('--no-sandbox')
-    # options.add_argument('--headless')
-    options.add_argument("--disable-gpu")
-    # options.add_argument("--window-size=1920, 1200")
-    options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome()
     return driver
 
 
@@ -63,11 +57,11 @@ def run_bot(data_account, recover=1):
 
     driver = web_driver()
     driver.maximize_window()
-    print("Masuk")
 
     try:
 
         
+           
         username =  kw.replace(" ", "-")
 
         fix_username = username+'_'+random_string(5)
@@ -129,7 +123,7 @@ def run_bot(data_account, recover=1):
 
 
 
-        # Gunakan execute_script dengan argumen terpisah
+      
         driver.execute_script("document.querySelector('#tinymce').innerHTML = arguments[0];", konten)
 
 
@@ -143,13 +137,18 @@ def run_bot(data_account, recover=1):
 
 
 
-        urlnyaa = f'https://aetherhub.com/User/{fix_username}'
+        urlnya = f'https://aetherhub.com/User/{fix_username}'
+
+        # driver.get(urlnya)
+
 
         response = (
             supabase.table(SUPABASE_TABLE_NAME)
-            .insert({"result": urlnyaa})
+            .insert({"result": urlnya})
             .execute()
         )
+
+        time.sleep(5)
 
         print(f"SUKSES CREATE: {kw}", file=sys.__stderr__)
 
