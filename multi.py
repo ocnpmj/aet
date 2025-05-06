@@ -63,6 +63,7 @@ def run_bot(data_account, recover=1):
 
     driver = web_driver()
     driver.maximize_window()
+    print("Masuk")
 
     try:
 
