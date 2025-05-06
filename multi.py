@@ -20,9 +20,10 @@ from concurrent.futures import (
 )
 
 SUPABASE_URL = "https://cqakrownxujefhtmsefa.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxYWtyb3dueHVqZWZodG1zZWZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIyNjMyMzMsImV4cCI6MjA0NzgzOTIzM30.E9jJxNBxFsVZsndwhsMZ_2hXaeHdDTLS7jZ50l-S72U"
 SUPABASE_TABLE_NAME = "aet"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 
 def random_string(count):
