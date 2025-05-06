@@ -11,11 +11,17 @@ import random
 import sys
 import os
 
+from concurrent.futures import (
+    ProcessPoolExecutor,
+    ThreadPoolExecutor,
+    wait,
+    FIRST_EXCEPTION,
+)
+
 SUPABASE_URL = "https://cqakrownxujefhtmsefa.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxYWtyb3dueHVqZWZodG1zZWZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIyNjMyMzMsImV4cCI6MjA0NzgzOTIzM30.E9jJxNBxFsVZsndwhsMZ_2hXaeHdDTLS7jZ50l-S72U"
 SUPABASE_TABLE_NAME = "aet"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
 
 
 def random_string(count):
@@ -26,31 +32,33 @@ def random_string(count):
     # return random.choice(string.ascii_letters)
 
 
-# Fungsi membaca CSV dengan rentang baris tertentu
-def read_csv_range(filename, start, end):
-    with open(filename, newline='', encoding='utf-8') as f:
-        rows = [row[0] for i, row in enumerate(csv.reader(f)) if start <= i < end]
-    return rows
+def load_data(start_data, end_data):
 
-# Rentang data yang diproses (misal dari baris 1 sampai 50)
-start_row =0  # Baris pertama (0-based index)
-end_row = 50  # Baris terakhir yang ingin diproses
+    script_dir = os.path.dirname(os.path.realpath("__file__"))
+    data_file = os.path.join(script_dir, "x.csv")
 
-# Deklarasi akun tunggal
-email = "cwickgcobiebu"
-password = "@@Eskepal123"
+    data_account = []
 
-# Baca judul video sesuai rentang yang diinginkan
-titles = read_csv_range("x.csv", start_row, end_row)
+    with open(data_file) as csv_data_file:
+        data_account = list(csv.reader(csv_data_file, delimiter=","))
 
-# Inisialisasi WebDriver
+    data_account = data_account[int(start_data) : int(end_data)]
+
+    return data_account
 
 
-# Proses upload
-for title in titles:
+
+
+
+def run_bot(data_account, recover=1):
+    kw = data_account[0]
+
+
+
     try:
-        kw = title
 
+        
+           
         username =  kw.replace(" ", "-")
 
         fix_username = username+'_'+random_string(5)
@@ -111,7 +119,7 @@ for title in titles:
 
 
 
-        # Gunakan execute_script dengan argumen terpisah
+      
         driver.execute_script("document.querySelector('#tinymce').innerHTML = arguments[0];", konten)
 
 
@@ -125,7 +133,10 @@ for title in titles:
 
 
 
-        urlnya = f'https://aetherhub.com/User/{fix_username}'
+        urlnya = f'https://aetherhub.com/User/{slug}'
+
+        # driver.get(urlnya)
+
 
         response = (
             supabase.table(SUPABASE_TABLE_NAME)
@@ -133,10 +144,58 @@ for title in titles:
             .execute()
         )
 
-     
+        time.sleep(5)
+
+        print(f"SUKSES CREATE: {kw}", file=sys.__stderr__)
+
         time.sleep(5)
         driver.close()
-    except:
-        driver.quit()
+    except Exception as e:
+        if recover == 0:
+            print(
+                f"TERJADI ERROR: ${e}",
+                file=sys.__stderr__,
+            )
+            #driver.close()
+            return e
 
-        
+        run_bot(data_account, recover - 1)
+
+
+def main():
+
+    if len(sys.argv) < 3:
+        print('Params require "node run.js 0 5"')
+        os._exit(1)
+
+    start_data = int(sys.argv[1])
+    end_data = int(sys.argv[2])
+
+    workers = 1
+
+    if not start_data and not end_data:
+        print('Params require "node run.js 0 5"')
+        os._exit(1)
+
+    data = load_data(start_data, end_data)
+
+    futures = []
+    line_count = 0
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        for index in range(start_data + 1, end_data + 1):
+            try:
+                futures.append(
+                    executor.submit(
+                        run_bot,
+                        data[line_count],
+                    )
+                )
+            except:
+                pass
+            line_count += 1
+
+    wait(futures, return_when=FIRST_EXCEPTION)
+
+
+if __name__ == "__main__":
+    main()
