@@ -52,7 +52,7 @@ def load_data(start_data, end_data):
 
 def run_bot(data_account, recover=1):
     kw = data_account[0]
-     driver = webdriver.Chrome()
+    driver = webdriver.Chrome()
        
 
   
