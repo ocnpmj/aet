@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from supabase import create_client, Client
 from threading import Thread, Event
-from selenium.webdriver.common.action_chains import ActionChains
 import time
 import csv
 import string
@@ -68,9 +67,6 @@ def run_bot(data_account, recover=1):
     try:
 
         
-           
-       
-
         username =  kw.replace(" ", "-")
 
         fix_username = username+'_'+random_string(5)
@@ -132,7 +128,7 @@ def run_bot(data_account, recover=1):
 
 
 
-      
+        # Gunakan execute_script dengan argumen terpisah
         driver.execute_script("document.querySelector('#tinymce').innerHTML = arguments[0];", konten)
 
 
@@ -146,18 +142,13 @@ def run_bot(data_account, recover=1):
 
 
 
-        urlnya = f'https://aetherhub.com/User/{fix_username}'
-
-        # driver.get(urlnya)
-
+        urlnyaa = f'https://aetherhub.com/User/{fix_username}'
 
         response = (
             supabase.table(SUPABASE_TABLE_NAME)
-            .insert({"result": urlnya})
+            .insert({"result": urlnyaa})
             .execute()
         )
-
-        time.sleep(5)
 
         print(f"SUKSES CREATE: {kw}", file=sys.__stderr__)
 
