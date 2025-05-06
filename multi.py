@@ -53,8 +53,7 @@ def load_data(start_data, end_data):
 def run_bot(data_account, recover=1):
     kw = data_account[0]
 
-
-
+  
     try:
 
         
@@ -70,8 +69,8 @@ def run_bot(data_account, recover=1):
         print(judul)
 
 
+
         driver = webdriver.Chrome()
-        driver.maximize_window()
 
         
 
@@ -79,9 +78,61 @@ def run_bot(data_account, recover=1):
        
         time.sleep(5)
 
-        urlnya = f'https://aetherhub.com/User/'
+        driver.find_element(By.CSS_SELECTOR, '#Username').send_keys(slug)
+        time.sleep(1)
 
-        print(urlnya)
+
+        driver.find_element(By.CSS_SELECTOR, '#Email').send_keys(gmailnya)
+        time.sleep(1)
+
+        driver.find_element(By.CSS_SELECTOR, '#Password').send_keys('CobaGas123OKx')
+        time.sleep(1)
+
+        driver.find_element(By.CSS_SELECTOR, '#ConfirmPassword').send_keys('CobaGas123OKx')
+        time.sleep(1)
+
+        #angre
+
+        driver.find_element(By.CSS_SELECTOR, '#Consent').click()
+        time.sleep(1)
+
+        driver.find_element(By.CSS_SELECTOR, '#Newsletter').click()
+        time.sleep(1)
+
+        driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]').click()
+        time.sleep(5)
+        
+
+        driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[1]/form/div[16]/div/a').click()
+        time.sleep(2)
+
+
+        iframe = driver.find_element(By.ID, "profiledescription_ifr")
+
+        # Pindah ke dalam iframe
+        driver.switch_to.frame(iframe)
+
+        konten = f'''
+        {judul}<br><br> LINK ⏩⏩  <a href="https://clipsfans.com/{username}&ref=aet">https://clipsfans.com/{username}</a> 
+    '''
+
+
+
+      
+        driver.execute_script("document.querySelector('#tinymce').innerHTML = arguments[0];", konten)
+
+
+        time.sleep(3)
+
+        driver.switch_to.default_content()
+        
+
+        driver.find_element(By.CSS_SELECTOR, '#descriptionSubmit').click()
+        time.sleep(5)
+
+
+
+        urlnya = f'https://aetherhub.com/User/{slug}'
 
         # driver.get(urlnya)
 
